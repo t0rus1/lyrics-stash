@@ -7,6 +7,7 @@ import json
 from pprint import PrettyPrinter
 
 from apiclient.discovery import build
+from google.cloud import firestore
 
 import streamlit as st
 from streamlit_player import st_player
@@ -21,6 +22,22 @@ WATCH_STEM='https://www.youtube.com/watch?v='
 
 #pp = PrettyPrinter()
 youtube = build('youtube', 'v3', developerKey = 'AIzaSyC-zbUWUw3N4E3nfuNlqNaZob3Iv3nich8')
+
+def test_firestore():
+    # Authenticate to Firestore with the JSON account key.
+    db = firestore.Client.from_service_account_json("firestore-key.json")
+
+    # Create a reference to the Google post.
+    doc_ref = db.collection("pairings").document("mDbxTzqZf4Q") #Μελίνα Ασλανίδου - Ζω Τη Ζωή - Official Music Video
+
+    # Then get the data at that reference.
+    doc = doc_ref.get()
+
+    # Let's see what we got!
+    st.write("The id is: ", doc.id)
+    st.write("The contents are: ", doc.to_dict())
+
+
 
 def init_folders():
     ''' ensure needed folders exist'''
@@ -108,6 +125,9 @@ def search_form_callback():
 
 init_folders()
 setup_page()
+
+test_firestore()
+
 youtube = build('youtube', 'v3', developerKey = 'AIzaSyC-zbUWUw3N4E3nfuNlqNaZob3Iv3nich8')
 
 with st.expander("options"):

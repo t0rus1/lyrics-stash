@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "lyrics-stash",
+  "private_key_id": "44b46899250e384969d59ec153a8a9de5b72245b",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQCN2fBFk+35yPZV\nIEIWJhnWO3Uv6PR0K5Ayl5US3iAx3CN+Be5EgxaACDH1oEdrDAV5pFgRqdJzaXpi\nY8f+f1P/3fMCaYY0xmZFEyDok/1OuUa/hgdUXu+2+YLpWDEOljrdeT+IOZrzSwj/\nAwE39p0LI8DpXtCaxLw2POCPhkBRuTeSehY+AAV5aPklAeMZE4kLdn6TWUQZPxkD\nQp7E69GUlXAoW/S3nvc8ZUZTZTNJemeKHnJk/8FyGUzpoPY50FvKROL+8+5ttyKy\n9rsWcPbfpQX5h9D2MHbpS688ysk+kXmnCCXqOUPZUP7uTesgmlot57sYQoGr+efo\nM8TWU6jJAgMBAAECggEACgK0WySqabNN9wn0v/1mW2EMzxnAjqY4Yemiopc8bGhd\ntNoUS494ugZaCDyMbbiGdmQrtutmJ7Ds6x6hkYtI0UjHiocJ6pWJyBwmeWNgP/sB\nTCjYQZMFlcMcAv2vUJk3hEO3QRTXo43LD7wVjO6BfLTEO3Pugs2ZfrZjHp3Z0iqG\nIAQslMfd1CUXl3vktKjM+azPLYlJe8izAMTv4dABTFQCu8BcsK0iMs2MUYmmLhfT\nPMQ7vZK6mZQ9l1jwZpPLzDciLRfKbzLQp/7tuC6H4wKIP29ak+YmwnBiuEkG/n9r\n+I2F2aEK8nPztfB5S9bZiFSWf2PDp9uU43VeJVE31QKBgQDF49eMUN4A/MRFuLgi\nkE+WAWsCGmXSL4QZDAo8l5QvLLT4w2j+mMNvv2Z6ouzbji3BzfaUxf06VnxJT5yW\nBYe/resfeWSi1DEbI21fmLNlCBp5a7eFkfvNv2Jy30IGiZHcVtEYxkyYmnd/Yjit\nR5PG9zx+7vcWufJ1zOgNTH9XFwKBgQC3gXOfhA0dyCWg9YhYDj6u/HC7Y0hof9VN\ntVr/VV4auJ4KljTcRPLzJnCXYKe9NHaV3yrFcXwuMlDzrukZ/XmTMtO8iPAhiIRS\nWdA5Dnhum8s9kcQBe7652N5gzgWsUOZ1hGJQVBYKM3PrYK1jsNUgLvfn+R/ajf79\ns1TtW3rrHwKBgG+lh2Pb8BTghx/LAuBFSRGZxTTPjejS9BVpjJD4+BrRf1zmauNR\nbtoqQ3gnWbjZc4lnWZpARglW6BI4f2DIx/jl98SvKY8QZpAoIboQng3/T2h31Hfg\nkA9ZzgJ/YXHsxcVpmdj/cBGc/JR65v0kaASWUqRO0EsbJ+c8byOpqCKLAoGAc+KJ\nTQRMcDFUKgjEuK8OQN1kp8H0GSIZZ0CPHc4gZomOLKtc6HmWX5033zEH3QGDnfPY\nA+Y+AMJ/wtQDmwkqvJ2Nf3OPCe43efYD+/Q6c8dpGxGxkSo/cQgWr1WL2Z0hXLdk\nisv/OyPxIYTlGp6yiOeAYPs/dXrUvAyDJn3t6wsCgYBujI40B5+zf611v5GoQPIU\njbrMLiodvlxII9rsUQEJBPnZk8V32n+0jIwx9/MwMAbHypgNki/laT3oJIzdFDAH\ntlRuPnVRNnpg1V4tLn6TKUxjqxUeBl5F6cWC1JoKDGikYheaDb3o2fxQ1xA0HZm/\n2PcikWd/Rl1drfFkf9aFyg==\n-----END PRIVATE KEY-----\n",
+  "client_email": "firebase-adminsdk-3ftgv@lyrics-stash.iam.gserviceaccount.com",
+  "client_id": "113133107989944293141",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-3ftgv%40lyrics-stash.iam.gserviceaccount.com"
+}
