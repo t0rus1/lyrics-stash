@@ -11,6 +11,8 @@ google-auth-oauthlib = "*"
 google-auth-httplib2 = "*"
 streamlit-player = "*"
 youtube-dl = "*"
+streamlit-aggrid = "*"
+pandas = "*"
 
 [dev-packages]
 

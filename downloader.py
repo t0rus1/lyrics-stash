@@ -13,21 +13,26 @@ class MyLogger(object):
         print(msg)
 
 def my_hook(d):   
+    progress=0
+    progress_message = ''
     if d['status'] == 'finished': # could alo be 'downloading' or 'error'
-        progress_message = '' #'Done downloading, now converting ...')
+        progress=100
+        progress_message = '' # takes away progress bar
     elif d['status'] == 'downloading':
-        # format a progress message
-        # bytes_so_far = d['downloaded_bytes']
-        # bytes_total = d['total_bytes']
         eta = d['eta']
-        bytes_so_far = "{:,}".format(d['downloaded_bytes']) 
-        bytes_total = "{:,}".format(d['total_bytes'])
-        progress_message = f"{bytes_so_far} of {bytes_total} bytes. ETA: {eta} seconds ..."
+        # bytes_so_far = "{:,}".format(d['downloaded_bytes']) 
+        # bytes_total = "{:,}".format(d['total_bytes'])
+        #progress_message = f"{bytes_so_far} of {bytes_total} bytes. ETA: {eta} seconds ..."
+        progress=int(100*d['downloaded_bytes'] / d['total_bytes'])
     else:
         progress_message = d['status']
 
     with ydl_opts['placeholder']:
-        st.write(progress_message)
+        if len(progress_message)>0:
+            st.write(progress_message)
+        else:
+            st.progress(progress)
+
 
 ydl_opts = {
     'format': 'bestaudio/best',
@@ -38,7 +43,8 @@ ydl_opts = {
     }],
     'logger': MyLogger(),
     'progress_hooks': [my_hook],
-    'outtmpl': './temp/%(title)s.%(ext)s',
+    #'outtmpl': './temp/%(title)s.%(ext)s',
+    'outtmpl': './temp/%(id)s.%(ext)s',
     'placeholder': None,
     'continuedl': True,
     #'max_filesize': 10*1024*1024
