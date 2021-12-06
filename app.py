@@ -18,7 +18,8 @@ import browsing
 import lyricing
 
 VERSION = '0.01'
-MAX_RESULTS = 50
+MAX_RESULTS = 25
+OPS_MODE = ('link browsing', 'Collecting music', 'updating lyrics')
 
 def init_folders():
     ''' ensure needed folders exist'''
@@ -39,7 +40,7 @@ def setup_page():
         }
     )
     st.title('Lyrics Stash🎶')
-    st.subheader("Search Youtube for Music, then pair with lyrics and translation!")
+    st.subheader("Search Youtube for Music:")
 
 def name_and_args():
     ''' inspect function arguments '''
@@ -64,11 +65,11 @@ setup_page()
 # TODO hide the dev key in streamlit secrets
 youtube = build('youtube', 'v3', developerKey = 'AIzaSyC-zbUWUw3N4E3nfuNlqNaZob3Iv3nich8')
 
-with st.expander("Options"):
+with st.expander("Operating mode & other settings"):
 
-    ops_mode = st.radio('mode',('browsing videos', 'Collecting music', 'updating lyrics'), key='ops_mode')
+    ops_mode = st.radio('mode',OPS_MODE, key='ops_mode', index=1)
     results_size = int(st.number_input('max number of results to fetch',min_value=1, max_value=100, value=MAX_RESULTS))
-    video_links_only = ops_mode == 'browsing videos' #st.checkbox('get youtube videos links only',value=False, help='check this if you only want to watch videos, as opposed to the normal pairing of audio with lyrics')
+    video_links_only = ops_mode == OPS_MODE[0] #st.checkbox('get youtube videos links only',value=False, help='check this if you only want to watch videos, as opposed to the normal pairing of audio with lyrics')
 
 with st.form('search_form'):
     if ops_mode == 'updating lyrics':

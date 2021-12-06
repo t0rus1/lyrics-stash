@@ -53,7 +53,7 @@ def search_form_callback():
         # place audio player - hopefully the file will be an mp3:
         st.audio(audio_fqn, format='audio/ogg')
         st.write(f'Watch video on Youtube {download_url}')
-        stash_item = store.get_stash_doc_by_videoId(audio_id)
+        stash_item = store.get_stash_docref_by_videoId(audio_id)
         existing_lyrics = stash_item['lyrics'] if stash_item is not None else 'no lyrics yet...'
         # download button
         with open(audio_fqn, 'rb') as f:
@@ -92,7 +92,8 @@ def browse_and_collect(youtube, video_links_only, results_size):
         for item in st.session_state.qry_result['items']:
             if video_links_only: # eg https://www.youtube.com/watch?v=9i3szgwCXzg
                 # write simple youtube link screen (which user may click to watch video in youtube tab)
-                st.markdown(f"[{item['snippet']['title']}]({WATCH_STEM}{item['id']['videoId']})")
+                #st.markdown(f"[{item['snippet']['title']}]({WATCH_STEM}{item['id']['videoId']})")
+                st.markdown(f"[test](file:///C:/Users/User/Google%20Drive/Personal/LyricsStash/v8BaGpgmJqU.mp3)")
             else:
                 # per usual mode of operating, write numbered title to a list for presentation below as a list of radiobuttons
                 list_prefix = f"{list_num}".zfill(2)
