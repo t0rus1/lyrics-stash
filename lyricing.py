@@ -1,10 +1,13 @@
 import pandas as pd
 import streamlit as st
+from appconfig import settings
 import store
+
 from st_aggrid import AgGrid
 from st_aggrid.grid_options_builder import GridOptionsBuilder
 from st_aggrid.shared import JsCode
 from st_aggrid.shared import GridUpdateMode
+
 
 def render_lyrics_form():
 
@@ -16,7 +19,7 @@ def render_lyrics_form():
 
     df = pd.DataFrame(items)
     # order the columns this way
-    df = df[['artist','title','lyrics','videoId','translation']]
+    df = df[['artist','title','videoId','snips','lyrics','translation']]
 
 
     gb = GridOptionsBuilder.from_dataframe(df)
@@ -25,8 +28,8 @@ def render_lyrics_form():
     gb.configure_selection(selection_mode='single', use_checkbox=True)
 
     # allow lyrics and translation to be editted
-    gb.configure_column('lyrics', editable=True)
-    gb.configure_column('translation', editable=True)
+    # gb.configure_column('lyrics', editable=True)
+    # gb.configure_column('translation', editable=True)
 
     gridOptions = gb.build()    
     
@@ -39,12 +42,21 @@ def render_lyrics_form():
     )
     if len(data['selected_rows'])>0: 
         #st.write(data['selected_rows'][0])
+        cur_snips = data['selected_rows'][0]['snips']
         cur_videoId = data['selected_rows'][0]['videoId']
         cur_lyrics = data['selected_rows'][0]['lyrics']
-        new_lyrics = st.text_area('lyrics',value=cur_lyrics, key='lyrics_text')
+        new_lyrics = st.text_area('lyrics',value=cur_lyrics, key='lyrics_text', height=400)
+        #
+        # start playing here if possible ...
+        #
+
+
+        # save changes if reqd
         if new_lyrics != cur_lyrics:
-            print('saving new lyrics...')
             store.update_stash_lyrics(cur_videoId,new_lyrics)
+
+        st.write(settings['LYRICS_SEARCH_LINK'])
+        
         return st.form_submit_button(label="Update lyrics",)
 
     return st.form_submit_button(label="Submit", help="To edit lyrics, select a row then click here")

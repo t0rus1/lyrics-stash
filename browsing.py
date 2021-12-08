@@ -5,8 +5,7 @@ import streamlit as st
 import downloader,store
 from youtube_dl.utils import DownloadError
 
-
-WATCH_STEM='https://www.youtube.com/watch?v='
+from appconfig import settings
 
 
 def submit_youtube_query(youtube, query, results_size):
@@ -53,7 +52,7 @@ def search_form_callback():
         # place audio player - hopefully the file will be an mp3:
         st.audio(audio_fqn, format='audio/ogg')
         st.write(f'Watch video on Youtube {download_url}')
-        stash_item = store.get_stash_docref_by_videoId(audio_id)
+        stash_item = store.get_stash_snapshot_by_videoId(audio_id)
         existing_lyrics = stash_item['lyrics'] if stash_item is not None else 'no lyrics yet...'
         # download button
         with open(audio_fqn, 'rb') as f:
@@ -61,7 +60,10 @@ def search_form_callback():
         # lyrics text
         st.write(existing_lyrics)
         if stash_item is None:
-            store.add_to_stash(audio_id, chosen_title)
+            # store the audio in a series of soundbites
+            num_snips = store.store_audio_as_snips(audio_id)
+            # add music entry to firestore stash
+            store.add_to_stash(audio_id, chosen_title, 'lyrics to be provided', num_snips)
         # if st.button('Save lyrics'):
         #     print(f'saving new lyrics: {new_lyrics}')
     else:
@@ -92,14 +94,13 @@ def browse_and_collect(youtube, video_links_only, results_size):
         for item in st.session_state.qry_result['items']:
             if video_links_only: # eg https://www.youtube.com/watch?v=9i3szgwCXzg
                 # write simple youtube link screen (which user may click to watch video in youtube tab)
-                #st.markdown(f"[{item['snippet']['title']}]({WATCH_STEM}{item['id']['videoId']})")
-                st.markdown(f"[test](file:///C:/Users/User/Google%20Drive/Personal/LyricsStash/v8BaGpgmJqU.mp3)")
+                st.markdown(f"[{item['snippet']['title']}]({settings['WATCH_STEM']}{item['id']['videoId']})")
             else:
                 # per usual mode of operating, write numbered title to a list for presentation below as a list of radiobuttons
                 list_prefix = f"{list_num}".zfill(2)
                 titles.append(f"{list_prefix}. {item['snippet']['title']}")
                 #also write to dict of urls keyed on title
-                video_url = f"{WATCH_STEM}{item['id']['videoId']}"
+                video_url = f"{settings['WATCH_STEM']}{item['id']['videoId']}"
                 st.session_state.urls_by_title[item['snippet']['title']] = video_url
                 st.session_state.video_id_by_index[list_num] = item['id']['videoId']
                 list_num = list_num+1

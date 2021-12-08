@@ -1,8 +1,9 @@
+secrets.toml
+firestore-key.json
 secrets.txt
 example1.py
 test1.py
 test2.py
-firestore-key.json
 
 scratchpad/
 secrets/

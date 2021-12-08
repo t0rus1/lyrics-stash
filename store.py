@@ -1,12 +1,14 @@
-import re
+import re,json
 from google.cloud import firestore
-#import streamlit as st
-
-#name of collection
-STASH='stash'
+import streamlit as st
+from appconfig import settings
 
 def get_db():
-    return firestore.Client.from_service_account_json("./secrets/firestore-key.json")
+    #return firestore.Client.from_service_account_json("./secrets/firestore-key.json")
+    key_dict = json.loads(st.secrets["textkey"])
+    creds = service_account.Credentials.from_service_account_info(key_dict)
+    db = firestore.Client(credentials=creds, project="lyrics-stash")
+
 
 # def test_firestore():
 #     # Authenticate to Firestore with the JSON account key.
@@ -23,10 +25,10 @@ def get_db():
 #     st.write("The contents are: ", doc.to_dict())
 
 
-def get_doc_snapshot_by_videoId(audio_id):
+def get_stash_snapshot_by_videoId(audio_id):
     # Note: Use of CollectionRef stream() is prefered to get()
     db = get_db()
-    col_ref = db.collection(STASH)
+    col_ref = db.collection(settings['STASH'])
     results = col_ref.where(u'videoId', u'==', audio_id).get()
 
     #one value assumed only, so return first 
@@ -39,9 +41,9 @@ def get_doc_snapshot_by_videoId(audio_id):
 def get_stash_stream():
 
     db = get_db()
-    return db.collection(STASH).stream()
+    return db.collection(settings['STASH']).stream()
 
-def add_to_stash(video_id, artist_and_title, native_lyrics=''):
+def add_to_stash(video_id, artist_and_title, native_lyrics, num_snips):
 
     # extract the artist from title
     # Xristos Dantis - Den Axizei
@@ -54,28 +56,73 @@ def add_to_stash(video_id, artist_and_title, native_lyrics=''):
         title= artist_and_title
 
     db = get_db()
-    db.collection(STASH).add({
+    db.collection(settings['STASH']).add({
         'artist': artist,
         'title': title,
         'lyrics': native_lyrics,
         'videoId': video_id,
-        'translation': ''
+        'translation': '',
+        'snips': num_snips,
     })
 
 def update_stash_lyrics(videoId, lyrics):
 
-    item = get_doc_snapshot_by_videoId(videoId)
+    item = get_stash_snapshot_by_videoId(videoId)
 
     db = get_db()
-    col_ref = db.collection(STASH)
+    col_ref = db.collection(settings['STASH'])
     doc = col_ref.document(item.id)
 
     doc.update({'lyrics': lyrics})
 
-def add_or_update_stash(video_id, artist_and_title, native_lyrics=''):
+def add_or_update_stash(video_id, artist_and_title, native_lyrics, num_snips):
 
-    doc = get_doc_snapshot_by_videoId(video_id)
+    doc = get_stash_snapshot_by_videoId(video_id)
     if doc is None:
-        add_to_stash(video_id, artist_and_title, native_lyrics)
+        add_to_stash(video_id, artist_and_title, native_lyrics, num_snips)
     else:
         update_stash_lyrics(doc.videoId, native_lyrics)
+
+# def split_file(fp, marker):
+#     BLOCKSIZE = 4096
+#     result = []
+#     current = ''
+#     for block in iter(lambda: fp.read(BLOCKSIZE), ''):
+#         current += block
+#         while 1:
+#             markerpos = current.find(marker)
+#             if markerpos == -1:
+#                 break
+#             result.append(current[:markerpos])
+#             current = current[markerpos + len(marker):]
+#     result.append(current)
+#     return result
+
+def store_snip(videoId, snip_count, bytes):
+
+    db = get_db()
+    doc_ref = db.collection(settings['SNIPS']).document(f"{videoId}_{snip_count}") 
+    doc_ref.set({
+        'soundbite': bytes,
+    })
+
+def store_audio_as_snips(videoId):
+
+    # it is assumed this file exists
+    audio_fqn = f"./temp/{videoId}.mp3"
+
+    file = open(audio_fqn, 'rb')
+    snip_count=0
+    while True:
+        audio_bytes = file.read(settings['AUDIO_SNIP_SIZE'])
+        if audio_bytes and len(audio_bytes)>0:
+            # store (next) snip
+            store_snip(videoId, snip_count, audio_bytes)
+            snip_count = snip_count+1
+        else:
+            break
+    file.close()
+    
+    return snip_count
+
+

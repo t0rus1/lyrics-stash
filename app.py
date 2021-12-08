@@ -12,14 +12,13 @@ from google.cloud import firestore
 import streamlit as st
 from streamlit_player import st_player
 
+from appconfig import settings
+
 import downloader
 import store
 import browsing
 import lyricing
 
-VERSION = '0.01'
-MAX_RESULTS = 25
-OPS_MODE = ('link browsing', 'Collecting music', 'updating lyrics')
 
 def init_folders():
     ''' ensure needed folders exist'''
@@ -36,7 +35,7 @@ def setup_page():
         initial_sidebar_state="expanded",
         page_icon="🎶",
         menu_items={
-            "About": f"Music & Lyrics app, v{VERSION}, by Leon van Dyk 2021"
+            "About": f"Music & Lyrics app, v{settings['VERSION']}, by Leon van Dyk 2021"
         }
     )
     st.title('Lyrics Stash🎶')
@@ -67,9 +66,9 @@ youtube = build('youtube', 'v3', developerKey = 'AIzaSyC-zbUWUw3N4E3nfuNlqNaZob3
 
 with st.expander("Operating mode & other settings"):
 
-    ops_mode = st.radio('mode',OPS_MODE, key='ops_mode', index=1)
-    results_size = int(st.number_input('max number of results to fetch',min_value=1, max_value=100, value=MAX_RESULTS))
-    video_links_only = ops_mode == OPS_MODE[0] #st.checkbox('get youtube videos links only',value=False, help='check this if you only want to watch videos, as opposed to the normal pairing of audio with lyrics')
+    ops_mode = st.radio('mode',settings['OPS_MODE'], key='ops_mode', index=1)
+    results_size = int(st.number_input('max number of results to fetch',min_value=1, max_value=100, value=settings['MAX_RESULTS']))
+    video_links_only = ops_mode == settings['OPS_MODE'][0] 
 
 with st.form('search_form'):
     if ops_mode == 'updating lyrics':
