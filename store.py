@@ -1,5 +1,6 @@
 import re,json
 from google.cloud import firestore
+from google.oauth2 import service_account
 import streamlit as st
 from appconfig import settings
 
@@ -7,7 +8,7 @@ def get_db():
     #return firestore.Client.from_service_account_json("./secrets/firestore-key.json")
     key_dict = json.loads(st.secrets["textkey"])
     creds = service_account.Credentials.from_service_account_info(key_dict)
-    db = firestore.Client(credentials=creds, project="lyrics-stash")
+    return firestore.Client(credentials=creds, project="lyrics-stash")
 
 
 # def test_firestore():
