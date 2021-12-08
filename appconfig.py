@@ -3,7 +3,7 @@
 settings = {
     'STASH': 'stash',
     'SNIPS': 'snips',
-    'VERSION': '0.01',
+    'VERSION': '0.02',
     'MAX_RESULTS': 25,
     'OPS_MODE':  ('link browsing', 'Collecting music', 'updating lyrics'),
     'WATCH_STEM': 'https://www.youtube.com/watch?v=',

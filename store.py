@@ -3,6 +3,7 @@ from google.cloud import firestore
 from google.oauth2 import service_account
 import streamlit as st
 from appconfig import settings
+import io
 
 def get_db():
     #return firestore.Client.from_service_account_json("./secrets/firestore-key.json")
@@ -38,6 +39,34 @@ def get_stash_snapshot_by_videoId(audio_id):
 
     # empty
     return None
+
+def get_snip(db, audio_id, snip_num):
+
+    snip_docid = f"{audio_id}_{snip_num}" # eg hv6B207UTsI_0 case snip_num = 0
+
+    doc_ref = db.collection(settings['SNIPS']).document(snip_docid) 
+
+    # Then get the data at that reference.
+    doc = doc_ref.get()
+    snip = doc.to_dict()['soundbite']
+
+    return snip
+
+def delete_snip(db, audio_id, snip_num):
+
+    snip_docid = f"{audio_id}_{snip_num}" # eg hv6B207UTsI_0 case snip_num = 0
+    doc_ref = db.collection(settings['SNIPS']).document(snip_docid) 
+    doc_ref.delete()
+
+def piece_together_snips(audio_id, total_snips):
+
+    db = get_db()
+    all_bytes = []
+    for snip_num in range(total_snips):
+        snip_bytes = get_snip(db, audio_id, snip_num)
+        all_bytes.extend(snip_bytes)
+
+    return bytes(all_bytes)
 
 def get_stash_stream():
 
@@ -75,6 +104,17 @@ def update_stash_lyrics(videoId, lyrics):
     doc = col_ref.document(item.id)
 
     doc.update({'lyrics': lyrics})
+
+def update_stash_snips_count(videoId, snips):
+
+    item = get_stash_snapshot_by_videoId(videoId)
+
+    db = get_db()
+    col_ref = db.collection(settings['STASH'])
+    doc = col_ref.document(item.id)
+
+    doc.update({'snips': snips})
+
 
 def add_or_update_stash(video_id, artist_and_title, native_lyrics, num_snips):
 
@@ -126,4 +166,13 @@ def store_audio_as_snips(videoId):
     
     return snip_count
 
+def delete_all_audio_snips(videoId, num_snips):
+
+    db = get_db()
+    delete_count = 0
+    for snip_num in range(num_snips):
+        delete_snip(db, videoId, snip_num)
+        delete_count = delete_count + 1
+
+    return delete_count
 

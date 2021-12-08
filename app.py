@@ -64,7 +64,7 @@ setup_page()
 # TODO hide the dev key in streamlit secrets
 youtube = build('youtube', 'v3', developerKey = 'AIzaSyC-zbUWUw3N4E3nfuNlqNaZob3Iv3nich8')
 
-with st.expander("Operating mode & other settings"):
+with st.expander("Operating mode & other settings", expanded = True):
 
     ops_mode = st.radio('mode',settings['OPS_MODE'], key='ops_mode', index=1)
     results_size = int(st.number_input('max number of results to fetch',min_value=1, max_value=100, value=settings['MAX_RESULTS']))

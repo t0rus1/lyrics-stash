@@ -52,20 +52,25 @@ def search_form_callback():
         # place audio player - hopefully the file will be an mp3:
         st.audio(audio_fqn, format='audio/ogg')
         st.write(f'Watch video on Youtube {download_url}')
-        stash_item = store.get_stash_snapshot_by_videoId(audio_id)
-        existing_lyrics = stash_item['lyrics'] if stash_item is not None else 'no lyrics yet...'
         # download button
         with open(audio_fqn, 'rb') as f:
             st.download_button('Download', f, file_name=audio_fn, help='Add to your offline collection!')
-        # lyrics text
-        st.write(existing_lyrics)
+        stash_item = store.get_stash_snapshot_by_videoId(audio_id)
         if stash_item is None:
+            # new song
             # store the audio in a series of soundbites
-            num_snips = store.store_audio_as_snips(audio_id)
-            # add music entry to firestore stash
-            store.add_to_stash(audio_id, chosen_title, 'lyrics to be provided', num_snips)
-        # if st.button('Save lyrics'):
-        #     print(f'saving new lyrics: {new_lyrics}')
+            num_snips_stored = store.store_audio_as_snips(audio_id)
+            # then add music entry to firestore stash
+            store.add_to_stash(audio_id, chosen_title, 'lyrics to be provided', num_snips_stored)
+        else:
+            #store the audio anew:            
+            num_snips_to_delete = stash_item.to_dict()['snips']
+            num_snips_deleted = store.delete_all_audio_snips(audio_id, num_snips_to_delete)
+            num_snips_stored = store.store_audio_as_snips(audio_id)
+            print(f"deleted {num_snips_deleted} old snips, added {num_snips_stored} new ones")
+            #update snip count in the stash collection
+            store.update_stash_snips_count(audio_id, num_snips_stored)
+            st.info(f'⚠️ This song ({chosen_title}) was already in your stash! Audio has been re-saved in case a fix was needed.')
     else:
         st.error(f'Unable to find or play {audio_fn}') 
 
