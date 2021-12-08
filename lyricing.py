@@ -47,13 +47,14 @@ def render_lyrics_form():
         cur_snips = data['selected_rows'][0]['snips']
         cur_videoId = data['selected_rows'][0]['videoId']
         cur_lyrics = data['selected_rows'][0]['lyrics']
-        new_lyrics = st.text_area('lyrics',value=cur_lyrics, key='lyrics_text', height=400)
+        new_lyrics = st.text_area('🖊️ Lyrics - edit and | or sing along!',value=cur_lyrics, key='lyrics_text', height=400)
         #
         # put player here, after piecing together snips from firestore
         #
         if cur_snips > 0:
-            sound_bytes = store.piece_together_snips(cur_videoId, cur_snips)
-            st.audio(sound_bytes, format='audio/ogg')
+            with st.spinner('Preparing audio for playback...'):
+                audio_to_play = store.piece_together_snips(cur_videoId, cur_snips)
+            st.audio(audio_to_play, format='audio/ogg')
         else:
             st.write(f'No audio was stored for this song by {cur_artist} ({cur_title})')
 
@@ -64,6 +65,8 @@ def render_lyrics_form():
 
         st.write(settings['LYRICS_SEARCH_LINK'])
         
-        return st.form_submit_button(label="Update lyrics / Change song", help = 'Click to save lyrics changes. Change or clear selection to reset.')
+        return st.form_submit_button(label="Save lyrics / Change song", help = 'Click to save lyrics changes, change selection or, remove selection then click to reset.')
+    else:
+        st.write('Select ☑️ a song above, then click the button below')
 
     return st.form_submit_button(label="Play / Edit selected song Lyrics", help="To play and or edit lyrics, select a row then click here")

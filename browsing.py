@@ -59,9 +59,10 @@ def search_form_callback():
         if stash_item is None:
             # new song
             # store the audio in a series of soundbites
-            num_snips_stored = store.store_audio_as_snips(audio_id)
-            # then add music entry to firestore stash
-            store.add_to_stash(audio_id, chosen_title, 'lyrics to be provided', num_snips_stored)
+            with st.spinner("Storing song entry plus it's audio..."):
+                num_snips_stored = store.store_audio_as_snips(audio_id)
+                # then add music entry to firestore stash
+                store.add_to_stash(audio_id, chosen_title, '* needs lyrics!', num_snips_stored)
         else:
             #store the audio anew:            
             num_snips_to_delete = stash_item.to_dict()['snips']

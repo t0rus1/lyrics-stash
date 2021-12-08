@@ -71,8 +71,8 @@ with st.expander("Operating mode & other settings", expanded = True):
     video_links_only = ops_mode == settings['OPS_MODE'][0] 
 
 with st.form('search_form'):
-    if ops_mode == 'updating lyrics':
-        # updating lyrics        
+    if ops_mode == settings['OPS_MODE'][2]:  
+        # Playing & updating
         submit_button = lyricing.render_lyrics_form()
     else:
         # browsing and collecting
