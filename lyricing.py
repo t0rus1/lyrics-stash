@@ -27,9 +27,11 @@ def render_lyrics_form():
     gb.configure_side_bar()
     gb.configure_selection(selection_mode='single', use_checkbox=True)
 
-    # allow lyrics and translation to be editted
-    # gb.configure_column('lyrics', editable=True)
-    # gb.configure_column('translation', editable=True)
+    # allow these selected columns to be editted
+    gb.configure_column('artist', editable=True)
+    gb.configure_column('title', editable=True)
+    gb.configure_column('lyrics', editable=True)
+    gb.configure_column('translation', editable=True)
 
     gridOptions = gb.build()    
     
@@ -61,7 +63,7 @@ def render_lyrics_form():
 
         # save changes if reqd
         if new_lyrics != cur_lyrics:
-            store.update_stash_lyrics(cur_videoId,new_lyrics)
+            store.update_stash_lyrics(cur_videoId, new_lyrics, cur_artist, cur_title)
 
         st.write(settings['LYRICS_SEARCH_LINK'])
         

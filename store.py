@@ -73,6 +73,15 @@ def get_stash_stream():
     db = get_db()
     return db.collection(settings['STASH']).stream()
 
+def build_stash_videoIds_cache():
+    
+    docs = get_stash_stream()
+    ids = []
+    for doc in docs:
+        ids.append(doc.to_dict()['videoId'])
+    return ids
+
+
 def add_to_stash(video_id, artist_and_title, native_lyrics, num_snips):
 
     # extract the artist from title
@@ -95,7 +104,7 @@ def add_to_stash(video_id, artist_and_title, native_lyrics, num_snips):
         'snips': num_snips,
     })
 
-def update_stash_lyrics(videoId, lyrics):
+def update_stash_lyrics(videoId, lyrics, artist, title):
 
     item = get_stash_snapshot_by_videoId(videoId)
 
@@ -103,7 +112,12 @@ def update_stash_lyrics(videoId, lyrics):
     col_ref = db.collection(settings['STASH'])
     doc = col_ref.document(item.id)
 
-    doc.update({'lyrics': lyrics})
+    doc.update({
+        'lyrics': lyrics,
+        #'translation': translation,
+        'artist': artist,
+        'title': title,
+    })
 
 def update_stash_snips_count(videoId, snips):
 

@@ -39,7 +39,6 @@ def setup_page():
         }
     )
     st.title('Lyrics Stash🎶')
-    st.subheader("Search Youtube for Music:")
 
 def name_and_args():
     ''' inspect function arguments '''
@@ -63,6 +62,9 @@ setup_page()
 
 # TODO hide the dev key in streamlit secrets
 youtube = build('youtube', 'v3', developerKey = 'AIzaSyC-zbUWUw3N4E3nfuNlqNaZob3Iv3nich8')
+# lets be able to quickly know what videos are in the stash
+st.session_state.videoIds = store.build_stash_videoIds_cache()
+st.write(f"**{len(st.session_state.videoIds)}** songs currently in the collection")
 
 with st.expander("Operating mode & other settings", expanded = True):
 
