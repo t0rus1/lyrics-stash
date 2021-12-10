@@ -86,12 +86,14 @@ def add_to_stash(video_id, artist_and_title, native_lyrics, num_snips):
 
     # extract the artist from title
     # Xristos Dantis - Den Axizei
+    could_separate=False
     dash_pos = artist_and_title.find(' - ')
     if dash_pos != -1:
         artist = artist_and_title[0:dash_pos]
         title = artist_and_title[len(artist)+3:]
+        could_separate=True
     else:
-        artist=''
+        artist=artist_and_title
         title= artist_and_title
 
     db = get_db()
@@ -104,7 +106,10 @@ def add_to_stash(video_id, artist_and_title, native_lyrics, num_snips):
         'snips': num_snips,
     })
 
-def update_stash_lyrics(videoId, lyrics, artist, title):
+    return could_separate
+
+
+def update_stash_lyrics(videoId, lyrics, artist, title, translation):
 
     item = get_stash_snapshot_by_videoId(videoId)
 
@@ -114,9 +119,9 @@ def update_stash_lyrics(videoId, lyrics, artist, title):
 
     doc.update({
         'lyrics': lyrics,
-        #'translation': translation,
         'artist': artist,
         'title': title,
+        'translation': translation,
     })
 
 def update_stash_snips_count(videoId, snips):
@@ -130,13 +135,13 @@ def update_stash_snips_count(videoId, snips):
     doc.update({'snips': snips})
 
 
-def add_or_update_stash(video_id, artist_and_title, native_lyrics, num_snips):
+# def add_or_update_stash(video_id, artist_and_title, native_lyrics, num_snips):
 
-    doc = get_stash_snapshot_by_videoId(video_id)
-    if doc is None:
-        add_to_stash(video_id, artist_and_title, native_lyrics, num_snips)
-    else:
-        update_stash_lyrics(doc.videoId, native_lyrics)
+#     doc = get_stash_snapshot_by_videoId(video_id)
+#     if doc is None:
+#         add_to_stash(video_id, artist_and_title, native_lyrics, num_snips)
+#     else:
+#         update_stash_lyrics(doc.videoId, native_lyrics)
 
 # def split_file(fp, marker):
 #     BLOCKSIZE = 4096

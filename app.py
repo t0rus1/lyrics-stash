@@ -79,3 +79,4 @@ with st.form('search_form'):
     else:
         # browsing and collecting
         submit_button = browsing.browse_and_collect(youtube, video_links_only, results_size)
+

@@ -71,10 +71,12 @@ def search_form_callback():
             with st.spinner("Storing NEW song entry plus it's audio..."):
                 num_snips_stored = store.store_audio_as_snips(audio_id)
                 # then add music entry to firestore stash
-                store.add_to_stash(audio_id, chosen_title, '* needs lyrics!', num_snips_stored)
+                could_separate = store.add_to_stash(audio_id, chosen_title, '* needs lyrics!', num_snips_stored)
                 # keep tracking the video ids
                 st.session_state.videoIds.append(audio_id)
                 st.write(f"Just added: {chosen_title} ✔️")
+                if not could_separate:
+                    st.write(f"⚠️ Warning - was unable to separate Artist and Title - please do so manually later")
         else:
             #store the audio anew:            
             num_snips_to_delete = stash_item.to_dict()['snips']
@@ -106,6 +108,7 @@ def browse_and_collect(youtube, video_links_only, results_size):
         st.session_state.qry_result = submit_youtube_query(youtube, music_query, results_size)
 
         titles = []
+        already_owned = 0
         st.session_state.urls_by_title = {}
         st.session_state.video_id_by_index = {}
         st.session_state.video_links_only = video_links_only
@@ -125,14 +128,17 @@ def browse_and_collect(youtube, video_links_only, results_size):
                 #owned = '❗ ' if stash_item is not None else ''
 
                 # instead consult the session_state
-                # owned = '❗' if item['id']['videoId'] in st.session_state.videoIds else ''
+                owned = item['id']['videoId'] in st.session_state.videoIds
 
-                titles.append(f"{list_prefix}. {item['snippet']['title']}")
-                #also write to dict of urls keyed on title
-                video_url = f"{settings['WATCH_STEM']}{item['id']['videoId']}"
-                st.session_state.urls_by_title[item['snippet']['title']] = video_url
-                st.session_state.video_id_by_index[list_num] = item['id']['videoId']
-                list_num = list_num+1
+                if not owned:
+                    titles.append(f"{list_prefix}. {item['snippet']['title']}")
+                    #also write to dict of urls keyed on title
+                    video_url = f"{settings['WATCH_STEM']}{item['id']['videoId']}"
+                    st.session_state.urls_by_title[item['snippet']['title']] = video_url
+                    st.session_state.video_id_by_index[list_num] = item['id']['videoId']
+                    list_num = list_num+1
+                else:
+                    already_owned = already_owned+1
 
         # let see this
         #dumper.dump(st.session_state.urls_by_title, 1)
@@ -142,7 +148,9 @@ def browse_and_collect(youtube, video_links_only, results_size):
 
         if not video_links_only:
             # present a radio button list
-            st.radio('Choose a title to convert to audio and play/download', titles, key='title_radio')
+            st.radio('Choose a title to convert to audio and play/download. NOTE: these titles are as per Youtube', titles, key='title_radio')
+            if already_owned > 0:
+                st.write(f'❗ Note - {already_owned} title(s) matching your search skipped - these are already in your collection!')
             submit_button = st.form_submit_button(label='Get selected audio / reset', on_click=search_form_callback)
         else:
             st.write('click on any of the above links to play in a separate Youtube tab')
