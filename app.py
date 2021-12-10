@@ -68,8 +68,11 @@ st.write(f"**{len(st.session_state.videoIds)}** songs currently in the collectio
 
 with st.expander("Operating mode & other settings", expanded = True):
 
-    ops_mode = st.radio('mode',settings['OPS_MODE'], key='ops_mode', index=1)
-    results_size = int(st.number_input('max number of results to fetch',min_value=1, max_value=100, value=settings['MAX_RESULTS']))
+    col1,col2 = st.columns(2)
+    with col1:
+        ops_mode = st.radio('Mode',settings['OPS_MODE'], key='ops_mode', index=1)
+    with col2:
+        results_size = int(st.number_input('Max results to fetch',min_value=1, max_value=100, value=settings['MAX_RESULTS']))
     video_links_only = ops_mode == settings['OPS_MODE'][0] 
 
 with st.form('search_form'):

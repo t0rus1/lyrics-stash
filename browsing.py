@@ -97,7 +97,9 @@ def browse_and_collect(youtube, video_links_only, results_size):
         st.session_state.music_query = ''
         st.session_state.reset_checkbox = False
 
-    music_query = st.text_input("Artist and|or name of song video to search for. Submit an empty search to reset.", key='music_query', help='Artist AND song OR just artist OR just song. To begin a new search, clear this text box and click submit below')    
+    music_query = st.text_input("Search term: Artist - Song eg: 'Αντώνης Ρέμος - Δυο ψεμματα'", key='music_query', 
+        placeholder = '',
+        help='To begin a new search, clear this text box and click submit below')    
 
     if not music_query or (hasattr(st.session_state,'current_playee') and st.session_state.current_playee != '') :
         st.session_state.current_playee = ''
