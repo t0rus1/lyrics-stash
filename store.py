@@ -73,7 +73,7 @@ def get_stash_stream():
     db = get_db()
     return db.collection(settings['STASH']).stream()
 
-def build_stash_videoIds_cache():
+def build_stash_cache():
     
     docs = get_stash_stream()
     ids = []
