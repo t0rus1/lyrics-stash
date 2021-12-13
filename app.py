@@ -61,7 +61,8 @@ setup_page()
 #store.test_firestore()
 
 # TODO hide the dev key in streamlit secrets
-youtube = build('youtube', 'v3', developerKey = 'AIzaSyC-zbUWUw3N4E3nfuNlqNaZob3Iv3nich8')
+dev_key = st.secrets['developerKey']
+youtube = build('youtube', 'v3', developerKey = dev_key)
 # lets be able to quickly know what videos are in the stash
 st.session_state.videoIds = store.build_stash_cache()
 st.write(f"**{len(st.session_state.videoIds)}** songs currently in the collection")

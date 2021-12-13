@@ -1,7 +1,7 @@
 import pandas as pd
 import streamlit as st
 from appconfig import settings
-import store
+import store, xlate
 
 from st_aggrid import AgGrid
 from st_aggrid.grid_options_builder import GridOptionsBuilder
@@ -42,15 +42,18 @@ def render_lyrics_form():
     gb.configure_column('translation', editable=True)
 
     gridOptions = gb.build()    
-    
-    data = AgGrid(
-        df, 
-        gridOptions=gridOptions,
-        allow_unsafe_jscode=True,
-        enable_enterprise_modules=True,
-        update_mode=GridUpdateMode.SELECTION_CHANGED
-    )
+
+    stashgrid_collapsed = True if hasattr(st.session_state,'stashgrid_collapsed') and st.session_state.stashgrid_collapsed else False
+    with st.expander('📦 COLLECTION Open | close', expanded=not stashgrid_collapsed):
+        data = AgGrid(
+            df, 
+            gridOptions=gridOptions,
+            allow_unsafe_jscode=True,
+            enable_enterprise_modules=True,
+            update_mode=GridUpdateMode.SELECTION_CHANGED
+        )
     if len(data['selected_rows'])>0: 
+        st.session_state.stashgrid_collapsed = True
         #st.write(data['selected_rows'][0])
         cur_title = data['selected_rows'][0]['title']
         cur_artist = data['selected_rows'][0]['artist']
@@ -58,6 +61,11 @@ def render_lyrics_form():
         cur_videoId = data['selected_rows'][0]['videoId']
         cur_lyrics = data['selected_rows'][0]['lyrics']
         cur_translation = data['selected_rows'][0]['translation']
+        #print(cur_translation)
+        # if cur_translation == '':
+        #     # auto translate using google translation services
+        #     cur_translation = xlate.translate_text('en', cur_lyrics)
+        #     #print(f"translation:\n{cur_translation}")
 
         st.session_state.cur_videoId = cur_videoId
 
@@ -92,6 +100,7 @@ def render_lyrics_form():
                     help = 'Click to save lyrics changes, change selection or, remove selection then click to reset.', 
                     on_click=lyrics_form_callback)
     else:
+        st.session_state.stashgrid_collapsed = False
         st.write('Select ☑️ a song above, then click the button below')
 
     return st.form_submit_button(label="Play / Edit selected song Lyrics", 

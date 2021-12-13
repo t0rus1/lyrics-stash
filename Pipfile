@@ -13,6 +13,8 @@ streamlit-player = "*"
 youtube-dl = "*"
 streamlit-aggrid = "*"
 pandas = "*"
+google-cloud-translate = "==2.0.1"
+six = "*"
 
 [dev-packages]
 
